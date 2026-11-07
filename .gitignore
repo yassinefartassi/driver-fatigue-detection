@@ -1,0 +1,25 @@
+# Runtime data and logs (may contain driver measurements)
+data/
+logs/
+
+# Model weights are downloaded, not committed -- see DATA.md
+*.onnx
+*.pth
+*.dat
+*.task
+*.bz2
+*.part
+
+# Python
+__pycache__/
+*.pyc
+venv/
+.venv/
+
+# Secrets / local config
+.env
+.env.*
+!.env.example
+
+# OS
+.DS_Store

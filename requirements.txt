@@ -1,0 +1,26 @@
+# Driver Fatigue Detection System - Requirements
+# ================================================
+# For Raspberry Pi 5 with Camera Module 2 and GPIO sensors
+
+# Core dependencies
+numpy>=1.24.0
+scipy>=1.10.0
+opencv-python>=4.8.0
+dlib>=19.24.0
+
+# Web dashboard
+flask>=3.0.0
+
+# GPIO for Raspberry Pi
+RPi.GPIO>=0.7.1
+
+# Image processing
+Pillow>=10.0.0
+imutils>=0.5.4
+
+# For development/testing (optional)
+# pytest>=7.0.0
+# pytest-cov>=4.0.0
+
+# Data logging (optional)
+# pandas>=2.0.0
