@@ -99,40 +99,47 @@ python main.py --log-level DEBUG
 ## Fatigue Indicators
 
 ### Ocular (EAR-based)
-- **Eye Aspect Ratio (EAR)**: Measures eye openness; < 0.21 indicates closure
-- **Blink Rate**: Normal 15-20/min; elevated rate indicates fatigue
-- **PERCLOS**: Percentage of eye closure over time; > 15% indicates fatigue
-- **Micro-sleep**: Eyes closed ≥ 0.5 seconds triggers critical alert
+- **Eye Aspect Ratio (EAR)**: Measures eye openness; < 0.21 indicates closure, ≥ 0.30 is wide open
+- **Blink Rate**: Normal 12-20/min; below 5 or above 30 scores as maximum fatigue
+- **PERCLOS**: Share of time with eyes closed over 60 seconds; alert below 8%, severe above 30%
+- **Micro-sleep**: Eyes closed ≥ 2 seconds with a face detected triggers the priority alert
 
 ### Behavioral (MAR-based)
 - **Mouth Aspect Ratio (MAR)**: Detects yawning when > 0.6
-- **Yawn Frequency**: Tracked over 5-minute window
+- **Yawn Frequency**: Tracked over a 5-minute window; 0-1 is normal, 4 or more is high fatigue
 
 ### Physiological (HBPM-based)
-- **Heart Rate**: Low HR (< 55 BPM) indicates drowsiness
-- **HRV (RMSSD)**: Low variability indicates fatigue
+- **Heart Rate**: Normal 60-100 BPM; below 50 BPM scores as maximum drowsiness
+- **HRV (RMSSD)**: Measured and shown on the dashboard; not part of the fatigue score yet
 
 ## Fusion Weights
 
-| Indicator       | Weight |
-|-----------------|--------|
-| Blink Rate      | 15%    |
-| EAR Duration    | 20%    |
-| PERCLOS         | 15%    |
-| Yawn Frequency  | 15%    |
-| Heart Rate      | 15%    |
-| HRV             | 10%    |
-| Micro-sleep     | 10%    |
+These are the weights the fusion engine applies (`WEIGHTS` in
+[modules/fatigue_fusion.py](modules/fatigue_fusion.py)). The `WEIGHT_*` constants
+in `config.py` are not read by the engine.
+
+| Indicator                | Weight |
+|--------------------------|--------|
+| Blink Rate               | 35%    |
+| Heart Rate               | 20%    |
+| Yawn Frequency           | 20%    |
+| PERCLOS                  | 15%    |
+| Current Eye Openness (EAR) | 10%  |
+
+A micro-sleep is not a weighted term: while it is active, the score is raised
+to at least 80%.
 
 ## Alert Levels
 
-| Level    | Fatigue Score | Buzzer Pattern              |
-|----------|---------------|-----------------------------|
-| Low      | 30-50%        | 2 short beeps               |
-| Medium   | 50-70%        | 3 medium beeps              |
-| High     | 70-85%        | 5 rapid beeps               |
-| Critical | > 85%         | Continuous alarm            |
-| Micro-sleep | (Priority) | Loud continuous alarm       |
+| Level       | Fatigue Score | Buzzer Pattern                    |
+|-------------|---------------|-----------------------------------|
+| Low         | > 25%         | 2 short beeps                     |
+| Medium      | ≥ 40%         | 3 medium beeps                    |
+| High        | ≥ 60%         | 5 rapid beeps                     |
+| Micro-sleep | (Priority)    | 10 rapid beeps at full volume     |
+
+The dashboard also labels the score: alert (≤ 20%), low, moderate (≥ 40%),
+high (≥ 60%) and critical (≥ 80%).
 
 ## Configuration
 
